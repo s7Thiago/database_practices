@@ -8,7 +8,7 @@ drop database movefun;
 create table if not exists usuarios(
 nome varchar(15) not null,
 sobrenome varchar(40) not null,
-cpf varchar(11) not null,
+cpf varchar(11) not null auto_increment,
 rg int not null,
 username varchar(20) not null,
 tipo enum('usuario_comum','motorista'),
@@ -19,4 +19,4 @@ telefone varchar(15),
 latitude float not null,
 longitude float not null,
 estado char not null
-)default charset utf8;
+)default charset = utf8;
