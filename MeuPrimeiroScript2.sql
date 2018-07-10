@@ -70,3 +70,48 @@ nacionalidade varchar(20) default 'Brasil',
 primary key(id)
 )default charset = utf8;
 
+/*este comando insere informações na tabela pessoas. a leitura correta é: insira na tabela pessoas com as informações
+os valores... Eu não preciso informar o id como parâmetro, pois ele foi definido como auto increment*/
+insert into pessoas
+(nome, nascimento, sexo, peso, altura, nacionalidade)
+values
+('Thiago','1997-04-04','M','78.6','1.78','Brasil');
+
+/*usado para conferir os dados que estão presentes dentro da tabela pessoas*/
+select * from pessoas;
+
+/*inserindo dados novos na tabela pessoas*/
+insert into pessoas
+(nome, nascimento, sexo, peso, altura,nacionalidade)
+values
+('Fernando', '1991-5-12', 'M', '89.6', '1.87', 'Brasil');
+
+/*se eu quiser informar o campo id na sintaxe do comando de inserção sem interferir no valor que é gerado automaticamente,
+eu posso fazer isso da seguinte forma:*/
+insert into pessoas
+(id, nome, nascimento, sexo, peso, altura, nacionalidade) 
+values
+(default, 'Ana', '1988-09-21', 'F', '57.5', '1.66', 'Portugal');
+
+/*já que definimos a nacionalidade por padrão como Brasil, caso a mesma não seja especificada, vamos testar isso inserindo um
+novo registro especificando esse campo como sendo o padrão:*/
+insert into pessoas
+(id, nome, nascimento, sexo, peso, altura, nacionalidade)
+values
+(default, 'Bernardo', '1989-02-4', 'M', '88.5', '1.89', default);
+
+/*quando a ordem na qual será inserida os dados for a mesma ordem da tabela original definida no comando de criação da tabela,
+eu posso omitir parte do comando de inserção de dados, tornando o mesmo mais curto como no exemplo a seguir:*/
+insert into pessoas values
+(default, 'Maria', '1987-04-26', 'F', '61.1', '1.67', default);
+
+/*não é necessário user um insert into para cada registro diferente que formos inserir no banco de dados. Caso haja a necessidade,
+além da meneira completa, e simplificada de se usar o comando insert into, temos outra variação que nos permite inserir diversos
+dados, nesse caso, quantos quisermos. Usando essa variação em conjunto com a sintaxe silplificada, ficaria assim:*/
+##inserindo cinco novas pessoas no banco de dados:
+insert into pessoas values
+(default, 'Marta', '1985-10-23', 'F', '59.8', '1.69', 'Irlanda'),
+(default, 'Rogério', '1987-08-20', 'M', '99.8', '1.91', 'Alemanha'),
+(default, 'Marcos', '1985-07-17', 'M', '89.4', '1.86', 'Inglaterra'),
+(default, 'Juliana', '1978-10-23', 'F', '60.3', '1.63', 'Portugal'),
+(default, 'Gabriela', '1995-10-23', 'F', '55.3', '1.59', 'Estados Unidos');
