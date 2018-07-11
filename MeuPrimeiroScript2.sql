@@ -37,6 +37,8 @@ drop table pessoas;
 
 /*comando usado para detalhar uma tabela. Nesse caso a tebela "pessoas"*/
 describe pessoas;
+#ou ainda
+desc pessoas;
 
 /*comando usado para criar uma tabela no banco de dados. Na aula foi contextualizado um problema 
 que poderia surgir, que se trata de uma maneira de identificar de fora única cada pessoa cadastrada
@@ -115,3 +117,98 @@ insert into pessoas values
 (default, 'Marcos', '1985-07-17', 'M', '89.4', '1.86', 'Inglaterra'),
 (default, 'Juliana', '1978-10-23', 'F', '60.3', '1.63', 'Portugal'),
 (default, 'Gabriela', '1995-10-23', 'F', '55.3', '1.59', 'Estados Unidos');
+
+/*Alterando a estrutura da tabela para acrescentar uma nova coluna "profissao"*/
+alter table pessoas
+add column profissao varchar(10);
+
+/*Vemos que a coluna foi adicionada com sucesso, porém, ela estána última posição da estrutura da nossa tabela. em algumas situações, 
+para melhorar a visualização/legibilidade dos nossos dados dispostos na tabela, podemos querer colocar determinada coluna adicional
+em alguma posição específica da estrutura. para fazermos isso, apagamos a coluna com o comando drop column 'nome da coluna'*/
+alter table pessoas
+drop column profissao;
+
+/*agora vamos adicionar novamente a coluna, mas em uma nova posição, nesse caso, vamos colocá-la após o nome*/
+alter table pessoas
+add column profissao varchar(10) not null default '' after nome;
+
+/*não é possível adicionar um campo antes de outro com o comando before porque o mesmo não existe. para fazer isso, usamos este método:
+a palavra chave vai adicionar o campo como sendo o primeiro da tabela*/
+alter table pessoas
+add column codigo int first;
+
+/*Agora vamos apagar este campo, pois o mesmo serviu apenas para ilistrar a situação*/
+alter table pessoas
+drop column codigo;
+
+/*Revisando: para colocar um campo como o primeiro da lista, basta usar a palavra chave 'first'. para colocar o mesmo como sendo o último da
+tabela, basta que não usemos nenhuma palavra chave adicional, usando apenas o comando ater table em conjunto com o add column, e a mesma já
+será inserida automaticamente no final da tabela. Já para adicionarmos um campo após outro campo específico, basta que usemos a palavra chave 
+after''*/
+
+/*também podemos adicionar colunas a um atabela sem usar a palavra chave 'column'. Por exemplo, para adicionarmos novamente a coluna 'codigo'
+como sendo a primeira coluna da tabela, sem usar a palavra chave de antes:*/
+alter table pessoas
+add codigo int first;
+
+/*se nós quisermos alterar as propriedades de algum campo, por exemplo, digamos que percebemos que o campo profissão aceitando somente dez 
+caracteres não é o suficiente, e queiramos alterar esta propriedade. Basta usarmos o seguinte recurso:*/
+alter table pessoas
+modify column profissao varchar(20) not null default '';
+/*a palavra chave modify permite alterar o tipo primitivo do campo, e também as constraints. só não conseguimos renomear um campo usando este
+comando*/
+
+/*para modificar o nome de uma coluna e tambéa as suas constraints, usamos o comando 'change column [nome anterior] [novo nome + tipo primitivo]'
+ como no exemplo abaixo:*/
+alter table pessoas
+change column profissao prof varchar(20);
+/*com este comando podemos mudar também as propiredades do campo, como o not null e o tipo primitivo. para não perdermos as propriedades anteriores,
+é recomendável especificar as mesmas durante o uso do comando change*/
+alter table pessoas
+change column profissao prof varchar(20) not null default '';
+
+/*para renomear a tabela, usamos o comando 'rename to'*/
+alter table pessoas
+rename to individuos;
+
+/*Renomeando a tabela para o nome anterior*/
+alter table individuos
+rename to pessoas;
+
+/*vamos criar agora uma tabela chamada cursos para falar dos parâmetros 'if not exists' e 'if exists'*/
+create table if not exists cursos(
+nome varchar(30) not null unique,
+descricao text,
+carga int unsigned,
+totaulas int unsigned,
+ano year default '2018'
+)default charset = utf8;
+/*o parâmetro 'if not exists' serve para criarmos uma tabela caso ela não exista já o parâmetro 'if exists'serve para apagarmos uma tabela, caso ela 
+exista*/
+
+/*falando sobre as novas palavras chave e outros aspectos desta tabela: 
+
+unique: como nesse caso nós não teremos dous cursos com o mesmo nome por uma questão de coerência, usamos esta palavra chave não para identificar um
+registro, ou definir o mesmo como uma chave primária, e sim para não deixar que sejam inseridos dous registros com os mesmos valores em relação à 
+propriedade/campo em que ele foi inserido. neste caso, não queremos que dois cursos com o mesmo nome sejam inseridos na mesma tabela
+
+unsigned: esta palavra chave inserida no campo carga é oportuna pois já que por se tratar da duração de um curso em horas, nunca teremos um valor negativo,
+logo, não precisamos do sinal negativo. Usando o unsigned, limitamos a valoração deste campo apenas para valores sem sinal, ou seja, positivos.alter
+
+*/
+
+/*descrevendo a tabela*/
+desc cursos;
+
+/*perceba que criamos a tabela e esquecemos de especificar algum campo que identifique cada registro da mesma de maneira única, neste caso a primary key.
+Para isso, não precisamos apagar a tabela, e corrermos o risco inivitável de perder todos os dados existentes, bastando apenas usarmos os comandos de 
+alteração da estrutura de tabelas*/
+alter table cursos
+add column idcurso int first;
+
+/*como não podemos adicionar uma coluna e definir a chave primaria simultaneamente usando o comando alter, precisamos usar um segundo comando para fazer isso
+que é o add primary key(campo)*/
+alter table cursos
+add primary key(idcurso);
+/*Agora sim temos uma chave primaria para a tabela de cursos. Assim podemos ver que usando a constraint unique, definimos que o nome de cada registro numa tabela
+será único, mas não definimos que o mesmo campo será uma chave primária, restando à constrait 'primary key' a incubência de definir tal propriedade*/
