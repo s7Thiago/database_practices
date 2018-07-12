@@ -212,3 +212,85 @@ alter table cursos
 add primary key(idcurso);
 /*Agora sim temos uma chave primaria para a tabela de cursos. Assim podemos ver que usando a constraint unique, definimos que o nome de cada registro numa tabela
 será único, mas não definimos que o mesmo campo será uma chave primária, restando à constrait 'primary key' a incubência de definir tal propriedade*/
+
+/*Começando o conteúdo da aula 7: manipulando registros*/
+#primeiramente iremos inserir diversos registros na tabela de cursos
+insert into cursos values 
+('1', 'HTML4', 'Curso de HTML5', '40', '37', '2014'),
+('2', 'algoritmos', 'Lógica de Programação', '20', '15', '2014'),
+('3', 'Photoshop', 'Dicas de Photoshop CC', '10', '8', '2014'),
+('4', 'PGP', 'Curso de PHP para iniciantes', '40', '10', '2010'),
+('5', 'Jarva', 'Introdução à Linguagem Java', '10', '29', '2000'),
+('6', 'MySQL', 'Bancos de Dados MySQL', '30', '15', '2016'),
+('7', 'Word', 'Curso completo de Word', '40', '30', '2016'),
+('8', 'Sapateando', 'Danças Rítmicas', '40', '30', '2018'),
+('9', 'Cozinha Árabe', 'Aprenda a Fazer Kibe', '40', '30', '2018'),
+('10', 'Youtuber', 'Gerar polêmica e ganhar inscritos', '5', '2', '2018');
+
+/*Foram inieridos propositalmente alguns registros errados para que possamos corrigi-los. Eles são:
+linha 1: coluna nome;
+linha 4: coluna nome;
+linha 4: coluna ano;
+linha 5: coluna nome;
+linha 5: coluna cara;
+linha 5: coluna ano;*/
+
+/*para modificar um registro usamos o comando 'update [nome da tabela] set [nome da coluna] [valor]'; para referenciarmos a linha específica,é
+ aconselhável usar a chave primária da tabela como referência, pois assim, teremos certeza de que não tal registro é o único que possui esse 
+valor. Para tal, usamos o parâmetro where [campo de ref(Chave primária)] = '[valor]'*/
+
+/*Corrigindo a linha 1*/
+update cursos
+set nome = 'HTML5'
+where idcurso = '1';
+/*lemos o comando acima assim: atualize a tabela `cursos` configurando o campo `nome` para o valor 'HTML5' onde o campo `idcurso` for igual a '1'*/
+
+/*agora na linha 4 temos dois erros. é possível alterar os dois simultaneamente assim:*/
+update cursos
+set nome = 'PHP', ano = '2015' where idcurso = '4';
+/*ou seja, para modificarmos varios campos, basta referenciá-los normalmente separando cada um por vírgula*/
+
+/*Agora vamos corrigir a linha 5*/
+update cursos
+set nome = 'Java', carga = '40', ano = '2015' where idcurso = '5'
+limit 1;
+/*temos um problema que pode ocorrer, que é no caso de modificarmos acidentalmente mais de uma linha, causando certo dano aos demais dados da
+tabela. Podemos evitar que isso aconteça usando o parâmetro 'limit [valor]', que limita a quantidade de linhas (ou registros) que serão 
+afetadas pela modificação*/
+
+/*um exemplo de comando que pode prejudicar e alterar indevidamente os dados de uma tabela é o comando abaixo:*/
+update cursos
+set ano = '2050', carga = '1300' where ano = 2018;
+/*Este comando, que por sinal não possui um limit definido, afetaria todos os registros da tabela que possuirem o campo ano igual a 2018*/
+/*Ao executar este comando, o sistema do MySQL irá impedir que diversas linhas sejam alteradas altravés do safe update, lançando um erro
+no log. É aconselhável que este recurso fique ativado, para que este tipo de risco seja inibido. Uma situação de prejuízo é o caso de o banco
+possuir por exemplo, cem mil registros referentes ao valor do salário disponível para depósito, e por falta de atenção, você programar um script
+para alterar todos os registros de clientes que possuem o campo primeiro_nome igual a joão para 0, este seria um sério probelema, mas caso seja 
+necessário manter esse recurso desativado, é importante sempre ter um backup do último estado consistente do banco de dados.*/
+
+/*indo adiante, temos alguns registros que podemos perceber que estão fora dos temas tratados em TI, nesse caso temos 3 registros que não deveriam
+fazer parte do postifólio de cursos. Vamos agora remover cada um deles com o seguinte comando:*/
+delete from cursos where idcurso = '8';
+delete from cursos where idcurso = '9';
+delete from cursos where idcurso = '10';
+
+/*assim como os comandos para inserir alterar dados, também podemos remover vários registros simultaneamente assim. Por exemplo, se quisermos
+remover todos os crusos que foram criados em 2018, usariamos o seguinte comando:*/
+delete from cursos where ano = '2018'
+limit 3;
+/*atenção: para que o comando para remover afete vários registros, é necessário desativar o safe update*/
+
+/*també é possível apagar todos os registros de uma tabela de uma só vez com o segunte comando:*/
+truncate table cursos;
+#ou simplismente
+ truncate cursos;
+/*Mais eu não farei isso porque não quero peder todos os dados que eu já inseri na minha tabela*/
+
+
+
+
+
+
+
+
+
